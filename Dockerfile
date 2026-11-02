@@ -1,25 +1,14 @@
-FROM alpine:3.19
+FROM ubuntu:22.04
 
-RUN apk add --no-cache \
-    curl \
-    bash \
-    ca-certificates \
-    socat \
-    tzdata \
-    sqlite \
-    && ln -sf /usr/share/zoneinfo/Asia/Tehran /etc/localtime
-
-# نصب X-UI
-RUN curl -L https://github.com/mhsanaei/3x-ui/releases/download/v3.9.0/x-ui-linux-amd64.tar.gz -o /tmp/x-ui.tar.gz \
-    && tar -xzf /tmp/x-ui.tar.gz -C /usr/local/ \
-    && rm /tmp/x-ui.tar.gz \
-    && chmod +x /usr/local/x-ui/x-ui
-
-RUN mkdir -p /etc/x-ui /var/log/x-ui
+RUN apt-get update && apt-get install -y wget curl tar tzdata && rm -rf /var/lib/apt/lists/*
+WORKDIR /usr/local/
+RUN wget https://github.com/vaxilu/x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz && \
+    tar zxvf x-ui-linux-amd64.tar.gz && \
+    rm x-ui-linux-amd64.tar.gz && \
+    chmod +x x-ui/x-ui x-ui/bin/xray-linux-amd64
 
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-EXPOSE ${PORT}
-
+WORKDIR /usr/local/x-ui
 CMD ["/start.sh"]
