@@ -5,16 +5,16 @@ echo "🚀 Starting X-UI setup on port ${PORT}..."
 
 mkdir -p /root
 mkdir -p /usr/local/bin
-mkdir -p /tmp
 mkdir -p /etc/x-ui
+mkdir -p /tmp/apt-lists/partial
+mkdir -p /tmp/apt-archives/partial
 
-echo "🔧 Fixing apt permissions and installing curl..."
-chmod -R 777 /var/cache/apt /var/lib/apt
-apt-get -o APT::Sandbox::User=root update -y
-apt-get -o APT::Sandbox::User=root install -y curl ca-certificates tzdata
+echo "🔧 Installing curl using /tmp cache..."
+apt-get -o APT::Sandbox::User=root -o Dir::State::lists=/tmp/apt-lists -o Dir::Cache::archives=/tmp/apt-archives update -y
+apt-get -o APT::Sandbox::User=root -o Dir::State::lists=/tmp/apt-lists -o Dir::Cache::archives=/tmp/apt-archives install -y --no-install-recommends curl ca-certificates
 
 echo "⬇️ Downloading X-UI..."
-curl -L -o /tmp/x-ui.tar.gz https://github.com/MHSanaei/3x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz
+curl -L -k -o /tmp/x-ui.tar.gz https://github.com/MHSanaei/3x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz
 
 echo "📂 Extracting files to /root/x-ui ..."
 tar -zxf /tmp/x-ui.tar.gz -C /root/
