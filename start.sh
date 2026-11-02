@@ -1,15 +1,10 @@
 #!/bin/bash
+PORT=${PORT:-8080}
 echo "🚀 Starting X-UI on port ${PORT}..."
-# تنظیم پورت در فایل کانفیگ
-mkdir -p /etc/x-ui
-cat > /etc/x-ui/config.json << EOF
-{
-  "webPort": ${PORT},
-  "webBasePath": "/",
-  "webListen": "0.0.0.0",
-  "logLevel": "info"
-}
-EOF
-# اجرای X-UI
+
 cd /usr/local/x-ui
+# تنظیم پورت بر اساس پورتی که Lucity می‌دهد
+./x-ui setting -port ${PORT}
+
+# اجرای برنامه
 ./x-ui
