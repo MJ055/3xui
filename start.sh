@@ -1,23 +1,27 @@
 #!/bin/bash
 
-PORT=${PORT:-8080}
 echo "🚀 Starting X-UI setup on port ${PORT}..."
 
-mkdir -p /root /usr/local/bin /tmp
-URL="https://github.com/MHSanaei/3x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz"
-FILE="/tmp/x-ui.tar.gz"
+mkdir -p /root
+mkdir -p /usr/local/bin
+mkdir -p /tmp
+
+echo "🔧 Installing curl and tar..."
+apt-get update -y
+apt-get install -y curl tar ca-certificates tzdata
+apk add --no-cache curl tar ca-certificates tzdata
 
 echo "⬇️ Downloading X-UI..."
-curl -L -o "$FILE" "$URL"  (apt-get update && apt-get install -y curl tar ca-certificates && curl -L -o "$FILE" "$URL")  (apk add --no-cache curl tar ca-certificates && curl -L -o "$FILE" "$URL")
+curl -L -o /tmp/x-ui.tar.gz https://github.com/MHSanaei/3x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz
 
 echo "📂 Extracting files to /root/x-ui ..."
-tar -zxf "$FILE" -C /root/
-rm -f "$FILE"
+tar -zxf /tmp/x-ui.tar.gz -C /root/
+rm -f /tmp/x-ui.tar.gz
 
 cp /root/x-ui/x-ui /usr/local/bin/x-ui
-chmod +x /usr/local/bin/x-ui
-chmod +x /root/x-ui/x-ui
-chmod +x /root/x-ui/bin/*
+chmod 755 /usr/local/bin/x-ui
+chmod 755 /root/x-ui/x-ui
+chmod 755 /root/x-ui/bin/xray-linux-amd64
 
 echo "🔍 Checking files:"
 ls -lh /usr/local/bin/x-ui
