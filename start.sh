@@ -1,15 +1,17 @@
 #!/bin/bash
 
+PORT=${PORT:-8080}
 echo "🚀 Starting X-UI setup on port ${PORT}..."
 
 mkdir -p /root
 mkdir -p /usr/local/bin
 mkdir -p /tmp
+mkdir -p /etc/x-ui
 
-echo "🔧 Installing curl and tar..."
-apt-get update -y
-apt-get install -y curl tar ca-certificates tzdata
-apk add --no-cache curl tar ca-certificates tzdata
+echo "🔧 Fixing apt permissions and installing curl..."
+chmod -R 777 /var/cache/apt /var/lib/apt
+apt-get -o APT::Sandbox::User=root update -y
+apt-get -o APT::Sandbox::User=root install -y curl ca-certificates tzdata
 
 echo "⬇️ Downloading X-UI..."
 curl -L -o /tmp/x-ui.tar.gz https://github.com/MHSanaei/3x-ui/releases/latest/download/x-ui-linux-amd64.tar.gz
